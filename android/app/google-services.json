@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "962724192471",
+    "project_id": "hhmtestperf-18d27",
+    "storage_bucket": "hhmtestperf-18d27.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:962724192471:android:35da6c73e16fbb6314d092",
+        "android_client_info": {
+          "package_name": "com.example.perf_android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnt1MLcV_21A00lYAs2-qbZhPb2HUFEBE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
