@@ -9,7 +9,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseFirestore.instance.settings = const Settings(
-    persistenceEnabled: false,
+    persistenceEnabled: true,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
   runApp(const MyApp());
@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
     print('yolo come on');
     Stopwatch stopwatch = Stopwatch()..start();
     await FirebaseFirestore.instance
-        .collection('products2')
+        .collection('products')
         .where('zone', isEqualTo: 'Bruxelles')
         .orderBy('top', descending: true)
         .orderBy('dateType', descending: true)
