@@ -20,7 +20,7 @@ I've observed significantly longer loading times on Android devices. I've conduc
 
 
 ## How to reproduce and test ?
-1) Download the code from my [Github]().
+1) Download the code from my [Github](https://github.com/NicolasJacquet/android_perf).
 2) Retrieve the necessary packages.
 3) Run the app on a real device (results may not be consistent on emulators).
 
