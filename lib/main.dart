@@ -88,11 +88,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: const Text('Test load with 50 fields and orderBy'),
                   onPressed: () => testThis('products50', withOrder: true),
                 ),
-                /*const SizedBox(height: 30),
-                ElevatedButton(
-                  child: const Text('get product'),
-                  onPressed: () => test(),
-                ),*/
               ],
             ),
             if (loading)
@@ -145,14 +140,4 @@ class _MyHomePageState extends State<MyHomePage> {
     });
     print('Documents loaded : $length');
   }
-
-  /*Future<void> test() async {
-    await FirebaseFirestore.instance
-        .collection('products10')
-        .limit(1)
-        .get()
-        .then((value) {
-      print(value.docs.first.id);
-    });
-  }*/
 }
