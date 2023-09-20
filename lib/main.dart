@@ -9,7 +9,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseFirestore.instance.settings = const Settings(
-    persistenceEnabled: true,
+    persistenceEnabled: false,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
   runApp(const MyApp());
@@ -21,12 +21,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter Android perf test',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Flutter Android perf test'),
     );
   }
 }
@@ -41,6 +41,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String elapsedTime = '0';
+  String itemLength = '0';
+  bool loading = false;
+
   @override
   void initState() {
     super.initState();
@@ -53,31 +57,87 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: ElevatedButton(
-          child: const Text('test'),
-          onPressed: () => testThis(),
+      body: Padding(
+        padding: const EdgeInsets.all(40),
+        child: Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Call took : $elapsedTime sec',
+                    textAlign: TextAlign.center),
+                Text('For $itemLength documents', textAlign: TextAlign.center),
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  child: const Text('Test load with 10 fields'),
+                  onPressed: () => testThis('products10'),
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  child: const Text('Test load with 50 fields'),
+                  onPressed: () => testThis('products50'),
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  child: const Text('Test load with 10 fields and orderBy'),
+                  onPressed: () => testThis('products10'),
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  child: const Text('Test load with 50 fields and orderBy'),
+                  onPressed: () => testThis('products50'),
+                ),
+              ],
+            ),
+            if (loading)
+              Container(
+                color: Colors.white.withOpacity(0.5),
+              ),
+          ],
         ),
       ),
     );
   }
 
-  Future<String> testThis() async {
-    print('yolo come on');
+  Future<void> testThis(String collectionName, {bool withOrder = false}) async {
+    setState(() {
+      loading = true;
+    });
+    print('Test start with $collectionName');
     Stopwatch stopwatch = Stopwatch()..start();
-    await FirebaseFirestore.instance
-        .collection('products')
-        .where('zone', isEqualTo: 'Bruxelles')
-        .orderBy('top', descending: true)
-        .orderBy('dateType', descending: true)
-        .orderBy('name')
-        .orderBy('expiryDate')
-        .get()
-        .then(
-          (value) => print(value.docs.length),
-        );
+
+    if (withOrder) {
+      await FirebaseFirestore.instance
+          .collection(collectionName)
+          .orderBy('ein', descending: true)
+          .orderBy('name')
+          .orderBy('language')
+          .orderBy('company')
+          .get()
+          .then(
+            (value) => setLength(value.docs.length),
+          );
+    } else {
+      await FirebaseFirestore.instance.collection(collectionName).get().then(
+            (value) => setLength(value.docs.length),
+          );
+    }
+
     stopwatch.stop();
-    print('productsStreamByZone took ${stopwatch.elapsed}');
-    return 'ok';
+    setState(() {
+      elapsedTime = stopwatch.elapsed.toString();
+    });
+    print('Call took : ${stopwatch.elapsed}');
+    setState(() {
+      loading = false;
+    });
+  }
+
+  void setLength(int length) {
+    setState(() {
+      itemLength = length.toString();
+    });
+    print('Documents loaded : $length');
   }
 }
